@@ -29,7 +29,9 @@ public class Const {
 
     public enum UserExceptions implements TaskListException {
         USER_NOT_FOUND("Пользователь не найден", -101),
-        USER_NOT_CREATED("Не удалось создать пользователя", -102);
+        USER_NOT_CREATED("Не удалось создать пользователя", -102),
+        USER_ALEREADY_EXISTS("Пользователь с таким именем уже зарегистрирован", -103),
+        USER_EMAIL_ALEREADY_EXISTS("Указанный email уже использован другим пользователем при регистрации", -104);
 
         private final String message;
         private final int code;

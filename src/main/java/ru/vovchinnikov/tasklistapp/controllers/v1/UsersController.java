@@ -8,9 +8,7 @@ import ru.vovchinnikov.tasklistapp.dto.TaskListErrorDTO;
 import ru.vovchinnikov.tasklistapp.dto.UserDTO;
 import ru.vovchinnikov.tasklistapp.services.UsersService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
-import ru.vovchinnikov.tasklistapp.util.exceptions.ServerError;
-import ru.vovchinnikov.tasklistapp.util.exceptions.UserNotCreatedError;
-import ru.vovchinnikov.tasklistapp.util.exceptions.UserNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.exceptions.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -67,6 +65,22 @@ public class UsersController {
 
     @ExceptionHandler
     public ResponseEntity<TaskListErrorDTO> handleException(ServerError exception){
+        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+
+        return ResponseEntity.internalServerError().body(response);
+
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<TaskListErrorDTO> handleException(UserAlereadyExistsError exception){
+        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+
+        return ResponseEntity.internalServerError().body(response);
+
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<TaskListErrorDTO> handleException(UserEmailAlereadyExistsError exception){
         TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
 
         return ResponseEntity.internalServerError().body(response);

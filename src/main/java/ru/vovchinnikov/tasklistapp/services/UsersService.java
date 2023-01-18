@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.vovchinnikov.tasklistapp.dto.UserDTO;
 import ru.vovchinnikov.tasklistapp.models.User;
 import ru.vovchinnikov.tasklistapp.repositories.UsersRepository;
-import ru.vovchinnikov.tasklistapp.util.exceptions.ServerError;
-import ru.vovchinnikov.tasklistapp.util.exceptions.TaskListError;
-import ru.vovchinnikov.tasklistapp.util.exceptions.UserNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.exceptions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,10 +58,14 @@ public class UsersService {
     }
 
     public void createUser(UserDTO userDTO) {
-        // todo проверка на существование пользователя
+        if (usersRepository.findUserByUsername(userDTO.getUsername()).isPresent()){
+            throw new UserAlereadyExistsError();
+        }
+        if (usersRepository.findUserByEmail(userDTO.getEmail()).isPresent()){
+            throw new UserEmailAlereadyExistsError();
+        }
         usersRepository.save(convertAndEnrichUser(userDTO));
     }
-
 
     private UserDTO convertToDto(User user){
         return modelMapper.map(user, UserDTO.class);
