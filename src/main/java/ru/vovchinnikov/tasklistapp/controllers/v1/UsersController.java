@@ -8,7 +8,7 @@ import ru.vovchinnikov.tasklistapp.dto.TaskListErrorDTO;
 import ru.vovchinnikov.tasklistapp.dto.UserDTO;
 import ru.vovchinnikov.tasklistapp.services.UsersService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
-import ru.vovchinnikov.tasklistapp.util.exceptions.*;
+import ru.vovchinnikov.tasklistapp.util.errors.*;
 
 import javax.validation.Valid;
 import java.util.List;

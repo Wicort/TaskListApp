@@ -1,5 +1,6 @@
 package ru.vovchinnikov.tasklistapp.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @Column(name="id")
@@ -51,10 +53,4 @@ public class User {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    public User(String username, String password, String email) {
-        this.id = UUID.randomUUID();
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
 }

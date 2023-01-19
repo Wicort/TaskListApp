@@ -22,6 +22,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserDTO {
 
+    private UUID id;
+
     @NotEmpty(message="Имя пользователя не может быть пустым")
     @Size(min=3, max=20, message = "Длина имени пользователя должна быть в диапазоне от 3 до 20 символов")
     private String username;

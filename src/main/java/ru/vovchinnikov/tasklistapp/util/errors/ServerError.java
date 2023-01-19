@@ -1,7 +1,7 @@
-package ru.vovchinnikov.tasklistapp.util.exceptions;
+package ru.vovchinnikov.tasklistapp.util.errors;
 
-import ru.vovchinnikov.tasklistapp.util.Const.ServerExceptions;
-import ru.vovchinnikov.tasklistapp.util.TaskListException;
+
+import ru.vovchinnikov.tasklistapp.util.enums.ServerExceptions;
 
 /**
  * @author Ovchinnikov Viktor
