@@ -31,7 +31,7 @@ public class TaskItem implements TaskListItem{
     private String name;
 
     @Column(name="task_description")
-    @Max(value=255, message="Длина описания задачи не может быть больше 255 символов")
+    @Size(max=255, message="Длина описания задачи не может быть больше 255 символов")
     private String description;
 
     @Column(name="priority")
@@ -43,12 +43,23 @@ public class TaskItem implements TaskListItem{
     @Column(name="deadline_at")
     private LocalDateTime deadlineAt;
 
-    @Column(name="releasedAt")
+    @Column(name="released_at")
     private LocalDateTime releasedAt;
 
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "id")
     private User owner;
+
+    @ManyToOne
+    @JoinColumn(name="author_id", referencedColumnName = "id")
+    private User author;
+
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name="editor_id", referencedColumnName = "id")
+    private User editor;
 
     @Override
     public void release() {

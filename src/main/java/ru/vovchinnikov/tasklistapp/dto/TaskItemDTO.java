@@ -23,7 +23,7 @@ public class TaskItemDTO {
     @Size(min=3, max=100, message="Название задачи должно быть в диапазоне от 3 до 100 символов")
     private String name;
 
-    @Max(value=255, message="Длина описания задачи не может быть больше 255 символов")
+    @Size(max=255, message="Длина описания задачи не может быть больше 255 символов")
     private String description;
 
     private int priority;
@@ -34,5 +34,5 @@ public class TaskItemDTO {
 
     private LocalDateTime releasedAt;
 
-    private UserDTO owner;
+    private UUID ownerId;
 }

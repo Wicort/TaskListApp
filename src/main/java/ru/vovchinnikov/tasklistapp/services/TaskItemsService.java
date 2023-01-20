@@ -5,18 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vovchinnikov.tasklistapp.dto.TaskItemDTO;
-import ru.vovchinnikov.tasklistapp.dto.UserDTO;
 import ru.vovchinnikov.tasklistapp.models.TaskItem;
-import ru.vovchinnikov.tasklistapp.models.TaskListItem;
 import ru.vovchinnikov.tasklistapp.models.User;
 import ru.vovchinnikov.tasklistapp.repositories.TaskItemsRepository;
-import ru.vovchinnikov.tasklistapp.util.errors.ServerError;
+import ru.vovchinnikov.tasklistapp.util.errors.TaskNotFoundError;
 import ru.vovchinnikov.tasklistapp.util.errors.UserNotFoundError;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Ovchinnikov Viktor
@@ -35,51 +34,146 @@ public class TaskItemsService {
         this.modelMapper = modelMapper;
     }
 
-    public List<TaskListItem> findByUser(String userId) {
+    public List<TaskItemDTO> findByUser(String userId) {
         User user;
         try {
             user = usersService.findUserById(UUID.fromString(userId));
         } catch (IllegalArgumentException e) {
             throw new UserNotFoundError();
         }
-        return taskItemsRepository.findAllByOwner(user);
+        return taskItemsRepository.findAllByOwner(user)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = false)
     public void createTask(String userId, TaskItemDTO taskItemDTO) {
-        User user;
+
+        //todo check taskItem.ownerId is from users contact list. Else - Exception
+        taskItemDTO.setId(null); // we can't create new Task with existing Id. Setting id to null
+
+        User owner;
         try {
-            user = usersService.findUserById(UUID.fromString(userId));
+            String ownerId = taskItemDTO.getOwnerId().toString();
+            if ("".equals(ownerId)) {
+                ownerId = userId;
+            }
+            owner = usersService.findUserById(UUID.fromString(ownerId));
         } catch (IllegalArgumentException e) {
             throw new UserNotFoundError();
         }
 
         TaskItem taskItem = convertToTaskItem(taskItemDTO);
-        taskItem.setOwner(user);
+        taskItem.setOwner(owner);
+        try {
+            taskItem.setAuthor(usersService.findUserById(UUID.fromString(userId)));
+        } catch (IllegalArgumentException e) {
+            throw new UserNotFoundError();
+        }
 
         taskItemsRepository.save(taskItem);
 
     }
 
+    public TaskItem findTaskById(UUID taskId){
+        Optional<TaskItem> item = taskItemsRepository.findById(taskId);
+        if (item.isEmpty()) throw new TaskNotFoundError();
 
+        return item.get();
+    }
+
+    @Transactional(readOnly = false)
+    public void updateTask(String strTaskId, TaskItemDTO taskItemDTO, String strUserId) {
+        UUID taskId;
+        UUID userId;
+
+        try {
+            taskId = UUID.fromString(strTaskId);
+        } catch (IllegalArgumentException e){
+            throw new TaskNotFoundError();
+        }
+
+        try {
+            userId = UUID.fromString(strUserId);
+        } catch (IllegalArgumentException e){
+            throw new UserNotFoundError();
+        }
+
+        TaskItem task = findTaskById(taskId);
+        User editor = usersService.findUserById(userId);
+
+        enrichTaskItem(task, taskItemDTO);
+        task.setUpdatedAt(LocalDateTime.now());
+        task.setEditor(editor);
+
+        taskItemsRepository.save(task);
+
+    }
 
     private TaskItemDTO convertToDto(TaskItem taskItem){
-        return modelMapper.map(taskItem, TaskItemDTO.class);
+        TaskItemDTO dto = modelMapper.map(taskItem, TaskItemDTO.class);
+        dto.setOwnerId(taskItem.getOwner().getId());
+        return dto;
     }
 
     private TaskItem convertToTaskItem(TaskItemDTO taskItemDTO){
         if (taskItemDTO.getId() != null) {
+            // if we have TaskID, then loading it from DB
             Optional<TaskItem> taskListItem = taskItemsRepository.findById(taskItemDTO.getId());
             if (taskListItem.isPresent()) {
                 return taskListItem.get();
             }
         }
-        return enrichTaskItem(modelMapper.map(taskItemDTO, TaskItem.class));
+
+        TaskItem item = modelMapper.map(taskItemDTO, TaskItem.class);
+        if ((taskItemDTO.getOwnerId() != null) && (!"".equals(taskItemDTO.getOwnerId().toString()))) {
+            User user;
+            try {
+                user = usersService.findUserById(UUID.fromString(taskItemDTO.getOwnerId().toString()));
+            } catch (IllegalArgumentException e) {
+                throw new UserNotFoundError();
+            }
+            item.setOwner(user);
+        }
+
+        return enrichTaskItem(item);
     }
 
     private TaskItem enrichTaskItem(TaskItem taskItem){
-        taskItem.setId(UUID.randomUUID());
-        taskItem.setCreatedAt(LocalDateTime.now());
+        if (taskItem.getId() == null)
+            taskItem.setId(UUID.randomUUID());
+
+        if (taskItem.getCreatedAt() == null)
+            taskItem.setCreatedAt(LocalDateTime.now());
+
         return taskItem;
     }
+
+    private void enrichTaskItem(TaskItem item, TaskItemDTO dto){
+        if ((!"".equals(dto.getName()) &&
+                (!dto.getName().equals(item.getName()))))
+            item.setName(dto.getName());
+
+        if ((!"".equals(dto.getDescription()) &&
+                (!dto.getDescription().equals(item.getDescription()))))
+            item.setDescription(dto.getDescription());
+
+        if ((dto.getPriority() != 0) &&
+                (dto.getPriority() != item.getPriority()))
+            item.setPriority(dto.getPriority());
+
+        if ((dto.getDeadlineAt() != null) &&
+                (dto.getDeadlineAt() != item.getDeadlineAt()))
+            item.setDeadlineAt(dto.getDeadlineAt());
+
+        if (dto.getReleasedAt() != null)
+            item.setReleasedAt(dto.getReleasedAt());
+
+        if (dto.getOwnerId() != null)
+            item.setOwner(usersService.findUserById(dto.getOwnerId()));
+
+    }
+
+
 }

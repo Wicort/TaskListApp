@@ -16,6 +16,6 @@ public class UserNotCreatedError extends TaskListErrorWithDetail {
 
     @Override
     public int getCode() {
-        return 0;
+        return getException().getCode();
     }
 }

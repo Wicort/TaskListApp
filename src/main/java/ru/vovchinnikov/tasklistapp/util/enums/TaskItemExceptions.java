@@ -4,7 +4,8 @@ import ru.vovchinnikov.tasklistapp.util.TaskListException;
 
 public enum TaskItemExceptions implements TaskListException {
     TASK_NOT_FOUND("Задача не найдена", -201),
-    TASK_NOT_CREATED("Не удалось создать задачу", -202);
+    TASK_NOT_CREATED("Не удалось создать задачу", -202),
+    TASK_NOT_UPDATED("Не удалось изменить задачу", -203);
 
     private final String message;
     private final int code;

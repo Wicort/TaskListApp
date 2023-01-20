@@ -48,40 +48,40 @@ public class UsersController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskListErrorDTO> handleException(UserNotFoundError exception){
-        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+    public ResponseEntity<TaskListErrorDTO> handleException(UserNotFoundError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.badRequest().body(response);
 
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskListErrorDTO> handleException(UserNotCreatedError exception){
-        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+    public ResponseEntity<TaskListErrorDTO> handleException(UserNotCreatedError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.badRequest().body(response);
 
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskListErrorDTO> handleException(ServerError exception){
-        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+    public ResponseEntity<TaskListErrorDTO> handleException(ServerError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.internalServerError().body(response);
 
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskListErrorDTO> handleException(UserAlereadyExistsError exception){
-        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+    public ResponseEntity<TaskListErrorDTO> handleException(UserAlereadyExistsError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.internalServerError().body(response);
 
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskListErrorDTO> handleException(UserEmailAlereadyExistsError exception){
-        TaskListErrorDTO response = new TaskListErrorDTO(exception.getMessage(), exception.getCode());
+    public ResponseEntity<TaskListErrorDTO> handleException(UserEmailAlereadyExistsError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.internalServerError().body(response);
 

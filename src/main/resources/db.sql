@@ -22,5 +22,8 @@ create table task_item (
     created_at timestamp not null,
     deadline_at  timestamp,
     released_at timestamp,
-    user_id uuid references users(id) on delete cascade
+    user_id uuid references users(id) on delete cascade,
+    author_id uuid references users(id) on delete SET NULL,
+    editor_id uuid references users(id) on delete SET NULL,
+    updated_at timestamp
 )
