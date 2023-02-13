@@ -12,7 +12,6 @@ create table users (
 insert into users (id, username, email, password, date_of_birth, email_confirmed, created_at)
 values ('d0754e6e-97c1-4ce0-a9be-3205b278c57a', 'wicort', 'wicort@yandex.ru', '123', timestamp '1985-08-01 00:00:00', false, now());
 
-
 drop table task_item;
 create table task_item (
     id uuid not null primary key ,
@@ -26,4 +25,11 @@ create table task_item (
     author_id uuid references users(id) on delete SET NULL,
     editor_id uuid references users(id) on delete SET NULL,
     updated_at timestamp
-)
+);
+
+create table category (
+    id uuid not null primary key,
+    category_name varchar(100) not null,
+    created_at timestamp not null,
+    user_id uuid references users(id) on delete cascade
+);
