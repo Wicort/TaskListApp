@@ -17,7 +17,8 @@ import java.util.List;
  * @author Ovchinnikov Viktor
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
+@CrossOrigin
 public class UsersController {
 
     private final UsersService usersService;

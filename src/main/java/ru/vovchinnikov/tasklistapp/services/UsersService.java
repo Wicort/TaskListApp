@@ -99,4 +99,15 @@ public class UsersService {
         user.setEmailConfirmed(false);
         return user;
     }
+
+    public User findUserByStringId(String srtId){
+        User user;
+        try {
+            user = findUserById(UUID.fromString(srtId));
+        } catch (IllegalArgumentException e) {
+            throw new UserNotFoundError();
+        }
+        return user;
+    }
+
 }

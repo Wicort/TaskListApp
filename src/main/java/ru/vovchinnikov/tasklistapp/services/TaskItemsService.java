@@ -35,12 +35,7 @@ public class TaskItemsService {
     }
 
     public List<TaskItemDTO> findByUser(String userId) {
-        User user;
-        try {
-            user = usersService.findUserById(UUID.fromString(userId));
-        } catch (IllegalArgumentException e) {
-            throw new UserNotFoundError();
-        }
+        User user = usersService.findUserByStringId(userId);
         return taskItemsRepository.findAllByOwner(user)
                 .stream()
                 .map(this::convertToDto)
@@ -53,26 +48,30 @@ public class TaskItemsService {
         //todo check taskItem.ownerId is from users contact list. Else - Exception
         taskItemDTO.setId(null); // we can't create new Task with existing Id. Setting id to null
 
-        User owner;
-        try {
-            String ownerId = taskItemDTO.getOwnerId().toString();
-            if ("".equals(ownerId)) {
-                ownerId = userId;
-            }
-            owner = usersService.findUserById(UUID.fromString(ownerId));
-        } catch (IllegalArgumentException e) {
-            throw new UserNotFoundError();
+        String ownerId = taskItemDTO.getOwnerId().toString();
+        if ("".equals(ownerId)) {
+            ownerId = userId;
         }
+
+        User owner = usersService.findUserByStringId(ownerId);
 
         TaskItem taskItem = convertToTaskItem(taskItemDTO);
         taskItem.setOwner(owner);
-        try {
-            taskItem.setAuthor(usersService.findUserById(UUID.fromString(userId)));
-        } catch (IllegalArgumentException e) {
-            throw new UserNotFoundError();
-        }
+        taskItem.setAuthor(usersService.findUserByStringId(userId));
 
         taskItemsRepository.save(taskItem);
+
+    }
+
+    public TaskItemDTO findUserTaskById(String userIdStr, String taskIdStr){
+        User user = usersService.findUserByStringId(userIdStr);
+
+        Optional<TaskItem> item = taskItemsRepository.findOneByOwnerAndId(user, getTaskIdByStr(taskIdStr));
+
+        if (item.isPresent())
+            return modelMapper.map(item, TaskItemDTO.class);
+        else
+            throw new TaskNotFoundError();
 
     }
 
@@ -85,23 +84,10 @@ public class TaskItemsService {
 
     @Transactional(readOnly = false)
     public void updateTask(String strTaskId, TaskItemDTO taskItemDTO, String strUserId) {
-        UUID taskId;
-        UUID userId;
-
-        try {
-            taskId = UUID.fromString(strTaskId);
-        } catch (IllegalArgumentException e){
-            throw new TaskNotFoundError();
-        }
-
-        try {
-            userId = UUID.fromString(strUserId);
-        } catch (IllegalArgumentException e){
-            throw new UserNotFoundError();
-        }
+        UUID taskId = getTaskIdByStr(strTaskId);
 
         TaskItem task = findTaskById(taskId);
-        User editor = usersService.findUserById(userId);
+        User editor = usersService.findUserByStringId(strUserId);
 
         enrichTaskItem(task, taskItemDTO);
         task.setUpdatedAt(LocalDateTime.now());
@@ -109,6 +95,17 @@ public class TaskItemsService {
 
         taskItemsRepository.save(task);
 
+    }
+
+    private UUID getTaskIdByStr(String strTaskId) {
+        UUID taskId;
+
+        try {
+            taskId = UUID.fromString(strTaskId);
+        } catch (IllegalArgumentException e){
+            throw new TaskNotFoundError();
+        }
+        return taskId;
     }
 
     private TaskItemDTO convertToDto(TaskItem taskItem){
@@ -128,12 +125,7 @@ public class TaskItemsService {
 
         TaskItem item = modelMapper.map(taskItemDTO, TaskItem.class);
         if ((taskItemDTO.getOwnerId() != null) && (!"".equals(taskItemDTO.getOwnerId().toString()))) {
-            User user;
-            try {
-                user = usersService.findUserById(UUID.fromString(taskItemDTO.getOwnerId().toString()));
-            } catch (IllegalArgumentException e) {
-                throw new UserNotFoundError();
-            }
+            User user = usersService.findUserByStringId(taskItemDTO.getOwnerId().toString());
             item.setOwner(user);
         }
 

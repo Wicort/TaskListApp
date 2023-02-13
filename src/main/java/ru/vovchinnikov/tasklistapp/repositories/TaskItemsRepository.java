@@ -16,4 +16,5 @@ import java.util.UUID;
 public interface TaskItemsRepository extends JpaRepository<TaskItem, UUID> {
     List<TaskItem> findAllByOwner(User user);
 
+    Optional<TaskItem> findOneByOwnerAndId(User owner, UUID id);
 }
