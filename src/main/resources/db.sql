@@ -27,6 +27,7 @@ create table task_item (
     updated_at timestamp
 );
 
+drop table category;
 create table category (
     id uuid not null primary key,
     category_name varchar(100) not null,

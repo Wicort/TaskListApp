@@ -73,7 +73,7 @@ public class UsersController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<TaskListErrorDTO> handleException(UserAlereadyExistsError error){
+    public ResponseEntity<TaskListErrorDTO> handleException(UserAlreadyExistsError error){
         TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.internalServerError().body(response);

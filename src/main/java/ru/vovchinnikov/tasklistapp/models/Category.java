@@ -3,6 +3,7 @@ package ru.vovchinnikov.tasklistapp.models;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ public class Category {
     private UUID id;
 
     @Column(name = "category_name")
+    @Size(min = 3, max = 100, message = "Название списка должно содержать от 3 до 100 символов")
     private String name;
 
     @Column(name="created_at")
