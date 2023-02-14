@@ -1,9 +1,6 @@
 package ru.vovchinnikov.tasklistapp.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -13,10 +10,7 @@ import java.util.UUID;
 /**
  * @author Ovchinnikov Viktor
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name="task_item")
 public class TaskItem implements TaskListItem{
@@ -64,4 +58,5 @@ public class TaskItem implements TaskListItem{
     public void release() {
         this.releasedAt = LocalDateTime.now();
     }
+
 }

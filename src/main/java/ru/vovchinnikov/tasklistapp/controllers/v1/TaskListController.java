@@ -31,12 +31,12 @@ public class TaskListController {
         this.taskItemsService = taskItemsService;
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<TaskItemDTO>> findAllByUser(@PathVariable("userId") String userId){
         return ResponseEntity.ok(taskItemsService.findByUser(userId));
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<HttpStatus> createTask(@PathVariable("userId") String userId,
                                                  @RequestBody @Valid TaskItemDTO taskItemDTO,
                                                  BindingResult bindingResult){
@@ -48,22 +48,20 @@ public class TaskListController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/{taskId}")
-    public ResponseEntity<HttpStatus> updateTask(@PathVariable("userId") String userId,
-                                                 @PathVariable("taskId") String taskId,
+    @PostMapping("/{taskId}")
+    public ResponseEntity<HttpStatus> updateTask(@PathVariable("taskId") String taskId,
                                                  @RequestBody @Valid TaskItemDTO taskItemDTO,
                                                  BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             throw new TaskNotUpdatedError(BindingResultUtil.getBindingResultErrorsList(bindingResult));
         }
-        taskItemsService.updateTask(taskId, taskItemDTO, userId);
+        taskItemsService.updateTask(taskId, taskItemDTO);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/{taskId}")
-    public ResponseEntity<TaskItemDTO> findUserTaskById(@PathVariable("userId") String userId,
-                                                        @PathVariable("taskId") String taskId){
-        TaskItemDTO response = taskItemsService.findUserTaskById(userId, taskId);
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskItemDTO> findUserTaskById(@PathVariable("taskId") String taskId){
+        TaskItemDTO response = taskItemsService.findUserTaskById(taskId);
         return ResponseEntity.ok(response);
     }
 

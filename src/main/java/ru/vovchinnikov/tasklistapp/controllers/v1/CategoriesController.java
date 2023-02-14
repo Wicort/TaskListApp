@@ -20,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/categories")
+@CrossOrigin
 public class CategoriesController {
     private final CategoriesService categoriesService;
 
@@ -27,18 +28,17 @@ public class CategoriesController {
         this.categoriesService = categoriesService;
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<CategoryDTO>> findAllByUser(@PathVariable("userId") String userId){
         return ResponseEntity.ok(categoriesService.findAllByUserId(userId));
     }
 
-    @GetMapping("/{userId}/{categoryId}")
-    public ResponseEntity<CategoryDTO> findById(@PathVariable("userId") String userId,
-                                                @PathVariable("categoryId") String categoryId){
-        return ResponseEntity.ok(categoriesService.findOneById(userId, categoryId));
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<CategoryDTO> findById(@PathVariable("categoryId") String categoryId){
+        return ResponseEntity.ok(categoriesService.findOneById(categoryId));
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<HttpStatus> createCategory(@PathVariable("userId") String userId,
                                                      @RequestBody @Valid CategoryDTO category,
                                                      BindingResult bindingResult){

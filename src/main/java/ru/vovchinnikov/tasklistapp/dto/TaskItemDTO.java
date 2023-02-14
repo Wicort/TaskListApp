@@ -1,9 +1,6 @@
 package ru.vovchinnikov.tasklistapp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
@@ -13,10 +10,7 @@ import java.util.UUID;
 /**
  * @author Ovchinnikov Viktor
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class TaskItemDTO {
     private UUID id;
 
@@ -35,4 +29,8 @@ public class TaskItemDTO {
     private LocalDateTime releasedAt;
 
     private UUID ownerId;
+
+    private UUID authorId;
+
+    private UUID editorId;
 }

@@ -46,26 +46,29 @@ public class TaskItemsService {
 
         //todo check taskItem.ownerId is from users contact list. Else - Exception
         taskItemDTO.setId(null); // we can't create new Task with existing Id. Setting id to null
-
-        String ownerId = taskItemDTO.getOwnerId().toString();
+        String ownerId = "";
+        if (taskItemDTO.getOwnerId() != null) {
+            ownerId = taskItemDTO.getOwnerId().toString();
+        }
         if ("".equals(ownerId)) {
             ownerId = userId;
         }
 
-        User owner = usersService.findUserByStringId(ownerId);
+        taskItemDTO.setOwnerId(UUID.fromString(ownerId));
+
+        if (taskItemDTO.getAuthorId() == null)
+            taskItemDTO.setAuthorId(taskItemDTO.getOwnerId());
+
+        if (taskItemDTO.getEditorId() == null)
+            taskItemDTO.setEditorId(taskItemDTO.getOwnerId());
 
         TaskItem taskItem = convertToTaskItem(taskItemDTO);
-        taskItem.setOwner(owner);
-        taskItem.setAuthor(usersService.findUserByStringId(userId));
 
         taskItemsRepository.save(taskItem);
-
     }
 
-    public TaskItemDTO findUserTaskById(String userIdStr, String taskIdStr){
-        User user = usersService.findUserByStringId(userIdStr);
-
-        Optional<TaskItem> item = taskItemsRepository.findOneByOwnerAndId(user, getTaskIdByStr(taskIdStr));
+    public TaskItemDTO findUserTaskById(String taskIdStr){
+        Optional<TaskItem> item = taskItemsRepository.findOneById(getTaskIdByStr(taskIdStr));
 
         if (item.isPresent())
             return modelMapper.map(item, TaskItemDTO.class);
@@ -82,15 +85,13 @@ public class TaskItemsService {
     }
 
     @Transactional(readOnly = false)
-    public void updateTask(String strTaskId, TaskItemDTO taskItemDTO, String strUserId) {
+    public void updateTask(String strTaskId, TaskItemDTO taskItemDTO) {
         UUID taskId = getTaskIdByStr(strTaskId);
 
         TaskItem task = findTaskById(taskId);
-        User editor = usersService.findUserByStringId(strUserId);
 
         enrichTaskItem(task, taskItemDTO);
         task.setUpdatedAt(LocalDateTime.now());
-        task.setEditor(editor);
 
         taskItemsRepository.save(task);
 
@@ -109,7 +110,7 @@ public class TaskItemsService {
 
     private TaskItemDTO convertToDto(TaskItem taskItem){
         TaskItemDTO dto = modelMapper.map(taskItem, TaskItemDTO.class);
-        dto.setOwnerId(taskItem.getOwner().getId());
+
         return dto;
     }
 
@@ -138,6 +139,9 @@ public class TaskItemsService {
         if (taskItem.getCreatedAt() == null)
             taskItem.setCreatedAt(LocalDateTime.now());
 
+        if (taskItem.getUpdatedAt() == null)
+            taskItem.setUpdatedAt(LocalDateTime.now());
+
         return taskItem;
     }
 
@@ -163,6 +167,16 @@ public class TaskItemsService {
 
         if (dto.getOwnerId() != null)
             item.setOwner(usersService.findUserById(dto.getOwnerId()));
+
+        if (dto.getEditorId() != null)
+            item.setEditor(usersService.findUserById(dto.getEditorId()));
+        else
+            item.setEditor(item.getOwner());
+
+        if (dto.getAuthorId() != null)
+            item.setAuthor(usersService.findUserById(dto.getAuthorId()));
+        else
+            item.setAuthor(item.getOwner());
 
     }
 

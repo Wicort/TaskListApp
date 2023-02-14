@@ -75,10 +75,9 @@ public class CategoriesService {
         return category;
     }
 
-    public CategoryDTO findOneById(String userId, String categoryId) {
-        User user = usersService.findUserByStringId(userId);
+    public CategoryDTO findOneById(String categoryId) {
         try {
-            Optional<Category> category = repository.findOneByOwnerAndId(user, UUID.fromString(categoryId));
+            Optional<Category> category = repository.findOneById(UUID.fromString(categoryId));
             if (category.isPresent()) {
                 return modelMapper.map(category.get(), CategoryDTO.class);
             } else

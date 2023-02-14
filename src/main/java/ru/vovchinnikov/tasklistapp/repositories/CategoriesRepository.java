@@ -21,4 +21,5 @@ public interface CategoriesRepository extends JpaRepository<Category, UUID> {
 
     Optional<Category> findOneByOwnerAndName(User owner, String name);
 
+    Optional<Category> findOneById(UUID id);
 }
