@@ -8,6 +8,7 @@ import ru.vovchinnikov.tasklistapp.dto.CategoryDTO;
 import ru.vovchinnikov.tasklistapp.dto.TaskListErrorDTO;
 import ru.vovchinnikov.tasklistapp.services.CategoriesService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
+import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryAlereadyExistsError;
 import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryNotCreatedError;
 import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryNotFoundError;
 import ru.vovchinnikov.tasklistapp.util.errors.user.UserNotFoundError;
@@ -65,6 +66,13 @@ public class CategoriesController {
 
     @ExceptionHandler
     public ResponseEntity<TaskListErrorDTO> handleException(CategoryNotFoundError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<TaskListErrorDTO> handleException(CategoryAlereadyExistsError error){
         TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.badRequest().body(response);
