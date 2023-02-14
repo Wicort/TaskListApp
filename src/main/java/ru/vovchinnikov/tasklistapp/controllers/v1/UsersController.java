@@ -38,7 +38,7 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getOne(@PathVariable("id") String id){
-        return ResponseEntity.ok(usersService.findByUUID(id));
+        return ResponseEntity.ok(usersService.findById(id));
     }
 
     @PostMapping()

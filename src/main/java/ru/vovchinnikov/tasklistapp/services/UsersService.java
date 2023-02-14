@@ -1,5 +1,6 @@
 package ru.vovchinnikov.tasklistapp.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 public class UsersService {
 
@@ -34,47 +36,48 @@ public class UsersService {
     }
 
     public List<UserDTO> findAll() {
+        log.info("Getting all users");
         return usersRepository.findAll()
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    public UserDTO findByUUID(String id){
+    public UserDTO findById(String id){
+        log.info("Start finding user by id {}", id);
         try {
             Optional<User> user = usersRepository.findById(UUID.fromString(id));
 
             if (user.isPresent()) {
+                log.info("Found user for id {}: {}", id, user.get());
                 return convertToDto(user.get());
             }
+            log.error("Can not found user by id {}", id);
             throw new UserNotFoundError();
         } catch (IllegalArgumentException e) {
+            log.error("userId {} is not valid UUID", id);
             throw new UserNotFoundError();
         }
     }
 
     public User findUserById(UUID id){
+        log.info("Start finding user by UUID {}", id);
         Optional<User> user = usersRepository.findById(id);
         if (user.isEmpty()){
+            log.error("Can not found user by UUID {}", id);
             throw new UserNotFoundError();
         }
+        log.info("Found user by id {}: {}", id, user.get());
         return user.get();
-    }
-
-    public UserDTO findByName(String username){
-        Optional<User> user = usersRepository.findUserByUsername(username);
-
-        if (user.isPresent()){
-            return convertToDto(user.get());
-        }
-        throw new UserNotFoundError();
     }
 
     @Transactional(readOnly = false)
     public void createUser(UserDTO userDTO) {
         if (usersRepository.findUserByEmail(userDTO.getEmail()).isPresent()){
+            log.error("Error for creating new user: user with email {} alrady exists", userDTO.getEmail());
             throw new UserEmailAlereadyExistsError();
         }
+        log.info("creating user {}", userDTO);
         usersRepository.save(convertToUser(userDTO));
     }
 
@@ -101,11 +104,14 @@ public class UsersService {
         return user;
     }
 
-    public User findUserByStringId(String srtId){
+    public User findUserByStringId(String strId){
+        log.info("Start finding user by id {}", strId);
         User user;
         try {
-            user = findUserById(UUID.fromString(srtId));
+            user = findUserById(UUID.fromString(strId));
+            log.info("Found user by id {}: {}", strId, user);
         } catch (IllegalArgumentException e) {
+            log.error("userId {} is not valid UUID", strId);
             throw new UserNotFoundError();
         }
         return user;
