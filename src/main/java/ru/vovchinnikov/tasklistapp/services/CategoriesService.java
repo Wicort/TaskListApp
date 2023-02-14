@@ -6,7 +6,8 @@ import ru.vovchinnikov.tasklistapp.dto.CategoryDTO;
 import ru.vovchinnikov.tasklistapp.models.Category;
 import ru.vovchinnikov.tasklistapp.models.User;
 import ru.vovchinnikov.tasklistapp.repositories.CategoriesRepository;
-import ru.vovchinnikov.tasklistapp.util.errors.CategoryAlereadyExistsError;
+import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryAlereadyExistsError;
+import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryNotFoundError;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,5 +73,18 @@ public class CategoriesService {
             category.setCreatedAt(LocalDateTime.now());
         }
         return category;
+    }
+
+    public CategoryDTO findOneById(String userId, String categoryId) {
+        User user = usersService.findUserByStringId(userId);
+        try {
+            Optional<Category> category = repository.findOneByOwnerAndId(user, UUID.fromString(categoryId));
+            if (category.isPresent()) {
+                return modelMapper.map(category.get(), CategoryDTO.class);
+            } else
+                throw new CategoryNotFoundError();
+        } catch (IllegalArgumentException e) {
+            throw new CategoryNotFoundError();
+        }
     }
 }

@@ -1,15 +1,16 @@
-package ru.vovchinnikov.tasklistapp.util.errors;
+package ru.vovchinnikov.tasklistapp.util.errors.user;
 
 import ru.vovchinnikov.tasklistapp.util.enums.UserExceptions;
+import ru.vovchinnikov.tasklistapp.util.errors.TaskListError;
 
 /**
  * @author Ovchinnikov Viktor
  */
 
-public class UserAlreadyExistsError extends TaskListError {
+public class UserEmailAlereadyExistsError extends TaskListError {
 
-    public UserAlreadyExistsError() {
-        super(UserExceptions.USER_ALREADY_EXISTS);
+    public UserEmailAlereadyExistsError() {
+        super(UserExceptions.USER_EMAIL_ALREADY_EXISTS);
     }
 
     @Override

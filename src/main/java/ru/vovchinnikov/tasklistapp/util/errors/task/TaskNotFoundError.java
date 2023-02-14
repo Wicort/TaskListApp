@@ -1,11 +1,12 @@
-package ru.vovchinnikov.tasklistapp.util.errors;
+package ru.vovchinnikov.tasklistapp.util.errors.task;
 
 import ru.vovchinnikov.tasklistapp.util.enums.TaskItemExceptions;
+import ru.vovchinnikov.tasklistapp.util.errors.TaskListError;
 
 /**
  * @author Ovchinnikov Viktor
  */
-public class TaskNotFoundError extends TaskListError{
+public class TaskNotFoundError extends TaskListError {
 
     public TaskNotFoundError() {
         super(TaskItemExceptions.TASK_NOT_FOUND);

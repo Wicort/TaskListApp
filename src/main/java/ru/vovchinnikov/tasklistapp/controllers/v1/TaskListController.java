@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.vovchinnikov.tasklistapp.dto.TaskItemDTO;
 import ru.vovchinnikov.tasklistapp.dto.TaskListErrorDTO;
 import ru.vovchinnikov.tasklistapp.services.TaskItemsService;
-import ru.vovchinnikov.tasklistapp.services.UsersService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
-import ru.vovchinnikov.tasklistapp.util.errors.TaskNotCreatedError;
-import ru.vovchinnikov.tasklistapp.util.errors.TaskNotFoundError;
-import ru.vovchinnikov.tasklistapp.util.errors.TaskNotUpdatedError;
-import ru.vovchinnikov.tasklistapp.util.errors.UserNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.errors.task.TaskNotCreatedError;
+import ru.vovchinnikov.tasklistapp.util.errors.task.TaskNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.errors.task.TaskNotUpdatedError;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserNotFoundError;
 
 import javax.validation.Valid;
 import java.util.List;

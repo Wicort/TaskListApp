@@ -8,8 +8,7 @@ import ru.vovchinnikov.tasklistapp.dto.TaskItemDTO;
 import ru.vovchinnikov.tasklistapp.models.TaskItem;
 import ru.vovchinnikov.tasklistapp.models.User;
 import ru.vovchinnikov.tasklistapp.repositories.TaskItemsRepository;
-import ru.vovchinnikov.tasklistapp.util.errors.TaskNotFoundError;
-import ru.vovchinnikov.tasklistapp.util.errors.UserNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.errors.task.TaskNotFoundError;
 
 import java.time.LocalDateTime;
 import java.util.List;

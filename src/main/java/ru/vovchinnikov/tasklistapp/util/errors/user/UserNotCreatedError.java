@@ -1,6 +1,7 @@
-package ru.vovchinnikov.tasklistapp.util.errors;
+package ru.vovchinnikov.tasklistapp.util.errors.user;
 
 import ru.vovchinnikov.tasklistapp.util.enums.UserExceptions;
+import ru.vovchinnikov.tasklistapp.util.errors.TaskListErrorWithDetail;
 
 import java.util.List;
 

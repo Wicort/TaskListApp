@@ -8,9 +8,9 @@ import ru.vovchinnikov.tasklistapp.dto.CategoryDTO;
 import ru.vovchinnikov.tasklistapp.dto.TaskListErrorDTO;
 import ru.vovchinnikov.tasklistapp.services.CategoriesService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
-import ru.vovchinnikov.tasklistapp.util.errors.CategoryNotCreatedError;
-import ru.vovchinnikov.tasklistapp.util.errors.TaskNotCreatedError;
-import ru.vovchinnikov.tasklistapp.util.errors.UserNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryNotCreatedError;
+import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryNotFoundError;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserNotFoundError;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,6 +30,12 @@ public class CategoriesController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<CategoryDTO>> findAllByUser(@PathVariable("userId") String userId){
         return ResponseEntity.ok(categoriesService.findAllByUserId(userId));
+    }
+
+    @GetMapping("/{userId}/{categoryId}")
+    public ResponseEntity<CategoryDTO> findById(@PathVariable("userId") String userId,
+                                                @PathVariable("categoryId") String categoryId){
+        return ResponseEntity.ok(categoriesService.findOneById(userId, categoryId));
     }
 
     @PostMapping("/{userId}")
@@ -52,6 +58,13 @@ public class CategoriesController {
 
     @ExceptionHandler
     public ResponseEntity<TaskListErrorDTO> handleException(CategoryNotCreatedError error){
+        TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<TaskListErrorDTO> handleException(CategoryNotFoundError error){
         TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());
 
         return ResponseEntity.badRequest().body(response);

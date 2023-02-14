@@ -9,6 +9,10 @@ import ru.vovchinnikov.tasklistapp.dto.UserDTO;
 import ru.vovchinnikov.tasklistapp.services.UsersService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
 import ru.vovchinnikov.tasklistapp.util.errors.*;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserAlreadyExistsError;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserEmailAlereadyExistsError;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserNotCreatedError;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserNotFoundError;
 
 import javax.validation.Valid;
 import java.util.List;

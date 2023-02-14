@@ -6,7 +6,7 @@ import ru.vovchinnikov.tasklistapp.util.enums.ServerExceptions;
 /**
  * @author Ovchinnikov Viktor
  */
-public class ServerError extends TaskListError{
+public class ServerError extends TaskListError {
     public ServerError() {
         super(ServerExceptions.SERVER_EXCEPTION);
     }

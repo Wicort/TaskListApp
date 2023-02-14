@@ -7,7 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.vovchinnikov.tasklistapp.dto.UserDTO;
 import ru.vovchinnikov.tasklistapp.models.User;
 import ru.vovchinnikov.tasklistapp.repositories.UsersRepository;
-import ru.vovchinnikov.tasklistapp.util.errors.*;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserEmailAlereadyExistsError;
+import ru.vovchinnikov.tasklistapp.util.errors.user.UserNotFoundError;
 
 import java.time.LocalDateTime;
 import java.util.List;
