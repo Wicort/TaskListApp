@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -53,6 +54,9 @@ public class TaskItem implements TaskListItem{
     @ManyToOne
     @JoinColumn(name="editor_id", referencedColumnName = "id")
     private User editor;
+
+    /*@ManyToMany(mappedBy = "tasks")
+    private List<Category> categories;*/
 
     @Override
     public void release() {

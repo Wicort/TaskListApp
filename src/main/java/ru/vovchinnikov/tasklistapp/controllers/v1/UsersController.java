@@ -52,6 +52,8 @@ public class UsersController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    //==================================================================================================================
+
     @ExceptionHandler
     public ResponseEntity<TaskListErrorDTO> handleException(UserNotFoundError error){
         TaskListErrorDTO response = new TaskListErrorDTO(error.getMessage(), error.getCode());

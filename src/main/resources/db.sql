@@ -34,3 +34,12 @@ create table category (
     created_at timestamp not null,
     user_id uuid references users(id) on delete cascade
 );
+
+create table category_task (
+    category_id uuid references category(id),
+    task_id uuid references task_item(id),
+    primary key (category_id, task_id)
+);
+
+insert into category_task values ('f636c0fb-cd1a-48a1-9cee-6fab8b515e32', '4e04d4ea-84e4-4c81-ab0e-82fc2b9bf8c5');
+

@@ -2,9 +2,12 @@ package ru.vovchinnikov.tasklistapp.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vovchinnikov.tasklistapp.dto.CategoryDTO;
+import ru.vovchinnikov.tasklistapp.dto.TaskItemDTO;
 import ru.vovchinnikov.tasklistapp.models.Category;
+import ru.vovchinnikov.tasklistapp.models.TaskItem;
 import ru.vovchinnikov.tasklistapp.models.User;
 import ru.vovchinnikov.tasklistapp.repositories.CategoriesRepository;
 import ru.vovchinnikov.tasklistapp.util.errors.category.CategoryAlereadyExistsError;
@@ -24,11 +27,17 @@ import java.util.stream.Collectors;
 public class CategoriesService {
     private final CategoriesRepository repository;
     private final UsersService usersService;
+    private final TaskItemsService taskItemsService;
     private final ModelMapper modelMapper;
 
-    public CategoriesService(CategoriesRepository repository, UsersService usersService, ModelMapper modelMapper) {
+    @Autowired
+    public CategoriesService(CategoriesRepository repository,
+                             UsersService usersService,
+                             TaskItemsService taskItemsService,
+                             ModelMapper modelMapper) {
         this.repository = repository;
         this.usersService = usersService;
+        this.taskItemsService = taskItemsService;
         this.modelMapper = modelMapper;
     }
 
@@ -37,7 +46,7 @@ public class CategoriesService {
         User user = usersService.findUserByStringId(userId);
         List<Category> categoryList = repository.findAllByOwner(user);
         return categoryList.stream()
-                .map(category -> convertToDto(category))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -95,5 +104,28 @@ public class CategoriesService {
             log.error("CategoryId {} is not valid UUID", categoryId);
             throw new CategoryNotFoundError();
         }
+    }
+
+    public Category findById(UUID id){
+        Optional<Category> category = repository.findById(id);
+        if (category.isPresent()) {
+            return category.get();
+        } else
+            throw new CategoryNotFoundError();
+    }
+
+    public Category findByStrId(String id){
+        try {
+            return findById(UUID.fromString(id));
+        } catch (IllegalArgumentException e) {
+            throw new CategoryNotFoundError();
+        }
+    }
+
+    public List<TaskItemDTO> getCategoryTasks(String categoryId) {
+        Category category = findByStrId(categoryId);
+        List<TaskItem> tasks = category.getTasks();
+
+        return tasks.stream().map(taskItemsService::convertToDto).collect(Collectors.toList());
     }
 }

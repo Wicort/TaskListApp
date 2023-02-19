@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,4 +29,10 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User owner;
+
+    @ManyToMany
+    @JoinTable(name="category_task",
+    joinColumns = @JoinColumn(name="category_id"),
+    inverseJoinColumns = @JoinColumn(name = "task_id"))
+    private List<TaskItem> tasks;
 }

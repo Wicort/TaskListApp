@@ -108,7 +108,7 @@ public class TaskItemsService {
         return taskId;
     }
 
-    private TaskItemDTO convertToDto(TaskItem taskItem){
+    public TaskItemDTO convertToDto(TaskItem taskItem){
         TaskItemDTO dto = modelMapper.map(taskItem, TaskItemDTO.class);
 
         return dto;

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.vovchinnikov.tasklistapp.dto.CategoryDTO;
+import ru.vovchinnikov.tasklistapp.dto.TaskItemDTO;
 import ru.vovchinnikov.tasklistapp.dto.TaskListErrorDTO;
 import ru.vovchinnikov.tasklistapp.services.CategoriesService;
 import ru.vovchinnikov.tasklistapp.util.BindingResultUtil;
@@ -49,6 +50,13 @@ public class CategoriesController {
         categoriesService.create(userId, category);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    @GetMapping("/{categoryId}/tasks")
+    public ResponseEntity<List<TaskItemDTO>> getCategoryTasks(@PathVariable("categoryId") String categoryId){
+        return ResponseEntity.ok(categoriesService.getCategoryTasks(categoryId));
+    }
+
+    //==================================================================================================================
 
     @ExceptionHandler
     public ResponseEntity<TaskListErrorDTO> handleException(UserNotFoundError error){
